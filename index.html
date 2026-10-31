@@ -390,7 +390,55 @@ document.getElementById("walletReserved").textContent =
     history.appendChild(line);
   }
 }
+async function loadAuctions() {
+  const auctionList = document.getElementById("auctionList");
 
+  auctionList.textContent = "Carregando leilões...";
+
+  const { data: auctions, error } = await supabase
+    .from("auctions")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    auctionList.textContent = "Erro ao carregar leilões: " + error.message;
+    return;
+  }
+
+  auctionList.replaceChildren();
+
+  if (!auctions || auctions.length === 0) {
+    auctionList.textContent = "Nenhum leilão publicado ainda.";
+    return;
+  }
+
+  for (const auction of auctions) {
+    const card = document.createElement("div");
+    card.className = "transaction";
+
+    const title = document.createElement("h3");
+    title.textContent = auction.title;
+
+    const description = document.createElement("p");
+    description.textContent = auction.description || "Sem descrição.";
+
+    const price = document.createElement("p");
+    price.textContent = "Preço atual: " + money(auction.current_price);
+
+    const end = document.createElement("p");
+    end.textContent = "Encerra em: " +
+      new Date(auction.ends_at).toLocaleString("pt-BR");
+
+    const status = document.createElement("p");
+    status.textContent =
+      auction.status === "open" && new Date(auction.ends_at) > new Date()
+        ? "Leilão aberto"
+        : "Leilão encerrado";
+
+    card.append(title, description, price, end, status);
+    auctionList.appendChild(card);
+  }
+}
 async function checkAdmin() {
   const { data, error } = await supabase.rpc("is_admin");
 
