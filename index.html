@@ -5,22 +5,33 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Zhark Key Auction</title>
+
   <style>
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       background: #09090f;
       color: white;
       font-family: Arial, sans-serif;
     }
+
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 22px 8%;
       border-bottom: 1px solid #29203d;
+      flex-wrap: wrap;
+      gap: 12px;
     }
-    .logo { color: #a855f7; font-size: 22px; font-weight: bold; }
+
+    .logo {
+      color: #a855f7;
+      font-size: 22px;
+      font-weight: bold;
+    }
+
     button {
       border: 0;
       padding: 13px 20px;
@@ -30,15 +41,23 @@
       font-weight: bold;
       cursor: pointer;
     }
+
+    button:disabled {
+      opacity: 0.65;
+      cursor: wait;
+    }
+
     main {
       max-width: 1000px;
       margin: 65px auto;
       padding: 20px;
       text-align: center;
     }
+
     h1 { font-size: 42px; }
     h1 span { color: #a855f7; }
     .subtitle { color: #aaa; }
+
     .panel {
       background: #15121f;
       border: 1px solid #38234f;
@@ -46,14 +65,43 @@
       padding: 25px;
       margin-top: 35px;
     }
-    .discord { background: #5865f2; margin-top: 15px; }
-    .notice { color: #aaa; font-size: 13px; }
+
+    .discord {
+      background: #5865f2;
+      margin-top: 15px;
+    }
+
+    .notice {
+      color: #aaa;
+      font-size: 13px;
+    }
+
+    #account {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    #account img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 30px; }
+      header { padding: 18px 5%; }
+    }
   </style>
 </head>
+
 <body>
   <header>
     <div class="logo">ZHARK AUCTION</div>
-    <button id="loginButton">Entrar com Discord</button>
+    <div id="account">
+      <button id="loginButton">Entrar com Discord</button>
+    </div>
   </header>
 
   <main>
@@ -61,9 +109,13 @@
     <p class="subtitle">Dispute. Ofereça. Conquiste.</p>
 
     <section class="panel">
-      <h2>Bem-vindo ao Zhark Key Auction</h2>
-      <p>Entre com sua conta Discord para participar dos leilões.</p>
-      <button class="discord" id="mainLogin">Autorizar conta Discord</button>
+      <h2 id="welcome">Bem-vindo ao Zhark Key Auction</h2>
+      <p id="message">
+        Entre com sua conta Discord para participar dos leilões.
+      </p>
+      <button class="discord" id="mainLogin">
+        Autorizar conta Discord
+      </button>
       <p class="notice">Sua conta será autenticada com segurança.</p>
     </section>
 
@@ -73,92 +125,114 @@
     </section>
   </main>
 
-  
-<script type="module">
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+  <script type="module">
+    import { createClient } from
+      "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
-const SUPABASE_URL = "https://agzxdptfeszbridmwbbx.supabase.co";
-const SUPABASE_KEY = "sb_publishable_XhwL0fL0eKLM2cJUfaTMeg_V9noduzf";
+    const SUPABASE_URL =
+      "https://agzxdptfeszbridmwbbx.supabase.co";
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
-  auth: {
-    flowType: "pkce",
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: true
-  }
-});
-async function loginDiscord() {
-  const { error } = await supabase.auth.signInWithOAuth({
-    provider: "discord",
-    options: {
-      redirectTo: window.location.origin + window.location.pathname
+    const SUPABASE_KEY =
+      "sb_publishable_XhwL0fL0eKLM2cJUfaTMeg_V9noduzf";
+
+    const supabase = createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY,
+      {
+        auth: {
+          flowType: "pkce",
+          autoRefreshToken: true,
+          persistSession: true,
+          detectSessionInUrl: true
+        }
+      }
+    );
+
+    const loginButton = document.getElementById("loginButton");
+    const mainLogin = document.getElementById("mainLogin");
+    const account = document.getElementById("account");
+
+    async function loginDiscord() {
+      loginButton.disabled = true;
+      mainLogin.disabled = true;
+
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "discord",
+        options: {
+          redirectTo:
+            "https://thaylorliberato2025-boop.github.io/Zhark-Key-Auction/"
+        }
+      });
+
+      if (error) {
+        alert("Erro no login: " + error.message);
+        loginButton.disabled = false;
+        mainLogin.disabled = false;
+      }
     }
-  });
 
-  if (error) {
-    alert("Erro no login: " + error.message);
-  }
-}
+    function showUser(user) {
+      if (!user) return;
 
-document.getElementById("loginButton").onclick = loginDiscord;
-document.getElementById("mainLogin").onclick = loginDiscord;
+      const metadata = user.user_metadata || {};
 
-const { data: { session } } = await supabase.auth.getSession();
+      const name =
+        metadata.full_name ||
+        metadata.global_name ||
+        metadata.name ||
+        metadata.user_name ||
+        metadata.preferred_username ||
+        "Usuário Discord";
 
+      const avatar =
+        metadata.avatar_url ||
+        metadata.picture ||
+        "";
 
-if (session) {
-  const user = session.user;
-  const metadata = user.user_metadata || {};
+      document.getElementById("welcome").textContent =
+        "Bem-vindo, " + name + "!";
 
-  const name =
-    metadata.full_name ||
-    metadata.name ||
-    metadata.user_name ||
-    "Usuário Discord";
+      document.getElementById("message").textContent =
+        "Você está conectado com sua conta Discord.";
 
-  const avatar =
-    metadata.avatar_url ||
-    metadata.picture ||
-    "";
+      account.replaceChildren();
 
-  document.querySelector("main .panel h2").textContent =
-    "Bem-vindo, " + name + "!";
+      if (avatar) {
+        const img = document.createElement("img");
+        img.src = avatar;
+        img.alt = "Foto de perfil";
+        account.appendChild(img);
+      }
 
-  const loginButton = document.getElementById("loginButton");
+      const nameText = document.createElement("span");
+      nameText.textContent = name;
+      account.appendChild(nameText);
 
-  loginButton.replaceChildren();
+      const status = document.createElement("span");
+      status.textContent = "● Conectado";
+      status.style.color = "#b8ffb8";
+      account.appendChild(status);
 
-  if (avatar) {
-    const img = document.createElement("img");
-    img.src = avatar;
-    img.alt = "Foto de perfil";
-    img.style.width = "32px";
-    img.style.height = "32px";
-    img.style.borderRadius = "50%";
-    img.style.objectFit = "cover";
-    loginButton.appendChild(img);
-  }
+      mainLogin.textContent = "Conta autorizada";
+      mainLogin.disabled = true;
+    }
 
-  const profile = document.createElement("span");
-  profile.textContent = name;
-  loginButton.appendChild(profile);
+    loginButton.addEventListener("click", loginDiscord);
+    mainLogin.addEventListener("click", loginDiscord);
 
-  const status = document.createElement("span");
-  status.textContent = "● Conectado";
-  status.style.color = "#b8ffb8";
-  loginButton.appendChild(status);
+    supabase.auth.onAuthStateChange((event, session) => {
+      if (session?.user) {
+        showUser(session.user);
+      }
+    });
 
-  loginButton.style.display = "flex";
-  loginButton.style.alignItems = "center";
-  loginButton.style.gap = "9px";
+    const { data, error } = await supabase.auth.getSession();
 
-  document.getElementById("mainLogin").textContent =
-    "Conta autorizada";
-}
-
-  
-</script>
-
+    if (error) {
+      console.error("Erro ao recuperar sessão:", error.message);
+    } else if (data.session?.user) {
+      showUser(data.session.user);
+    }
+  </script>
 </body>
 </html>
