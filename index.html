@@ -435,8 +435,57 @@ async function loadAuctions() {
         ? "Leilão aberto"
         : "Leilão encerrado";
 
-    card.append(title, description, price, end, status);
-    auctionList.appendChild(card);
+    const bidInput = document.createElement("input");
+bidInput.type = "number";
+bidInput.min = Number(auction.current_price) + 0.01;
+bidInput.step = "0.01";
+bidInput.placeholder = "Valor do seu lance";
+bidInput.className = "field";
+
+const bidButton = document.createElement("button");
+bidButton.textContent = "Dar lance";
+
+card.append(title, description, price, end, status, bidInput, bidButton);
+auctionList.appendChild(card);
+    bidButton.addEventListener("click", async () => {
+  const amount = Number(bidInput.value);
+
+  if (!Number.isFinite(amount) || amount <= Number(auction.current_price)) {
+    alert("Seu lance precisa ser maior que o preço atual!");
+    return;
+  }
+
+  bidButton.disabled = true;
+  bidButton.textContent = "Enviando...";
+
+  const { data: userData, error: userError } =
+    await supabase.auth.getUser();
+
+  if (userError || !userData.user) {
+    alert("Você precisa entrar na sua conta Discord.");
+    bidButton.disabled = false;
+    bidButton.textContent = "Dar lance";
+    return;
+  }
+
+  const { error } = await supabase.rpc("place_bid", {
+    p_auction_id: auction.id,
+    p_amount: amount
+  });
+
+  bidButton.disabled = false;
+  bidButton.textContent = "Dar lance";
+
+  if (error) {
+    alert("Erro ao dar lance: " + error.message);
+    return;
+  }
+
+  alert("Lance realizado com sucesso!");
+
+  await loadAuctions();
+  await loadWallet(userData.user);
+});
   }
 }
 async function checkAdmin() {
