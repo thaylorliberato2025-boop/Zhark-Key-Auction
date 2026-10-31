@@ -2,237 +2,432 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Zhark Key Auction</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zhark Key Auction</title>
 
-  <style>
-    * { box-sizing: border-box; }
+<style>
+* { box-sizing: border-box; }
 
-    body {
-      margin: 0;
-      background: #09090f;
-      color: white;
-      font-family: Arial, sans-serif;
-    }
+body {
+  margin: 0;
+  background: #09090f;
+  color: white;
+  font-family: Arial, sans-serif;
+}
 
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 22px 8%;
-      border-bottom: 1px solid #29203d;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 22px 8%;
+  border-bottom: 1px solid #29203d;
+}
 
-    .logo {
-      color: #a855f7;
-      font-size: 22px;
-      font-weight: bold;
-    }
+.logo {
+  color: #a855f7;
+  font-size: 22px;
+  font-weight: bold;
+}
 
-    button {
-      border: 0;
-      padding: 13px 20px;
-      border-radius: 8px;
-      background: #7c3aed;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
+button {
+  border: 0;
+  padding: 13px 20px;
+  border-radius: 8px;
+  background: #7c3aed;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
 
-    button:disabled {
-      opacity: 0.65;
-      cursor: wait;
-    }
+button:disabled {
+  opacity: .6;
+  cursor: wait;
+}
 
-    main {
-      max-width: 1000px;
-      margin: 65px auto;
-      padding: 20px;
-      text-align: center;
-    }
+main {
+  max-width: 1000px;
+  margin: 50px auto;
+  padding: 20px;
+  text-align: center;
+}
 
-    h1 { font-size: 42px; }
-    h1 span { color: #a855f7; }
-    .subtitle { color: #aaa; }
+h1 { font-size: 40px; }
+h1 span { color: #a855f7; }
 
-    .panel {
-      background: #15121f;
-      border: 1px solid #38234f;
-      border-radius: 14px;
-      padding: 25px;
-      margin-top: 35px;
-    }
+.subtitle, .notice { color: #aaa; }
 
-    .discord {
-      background: #5865f2;
-      margin-top: 15px;
-    }
+.panel {
+  background: #15121f;
+  border: 1px solid #38234f;
+  border-radius: 14px;
+  padding: 25px;
+  margin-top: 25px;
+}
 
-    .notice {
-      color: #aaa;
-      font-size: 13px;
-    }
+.discord { background: #5865f2; }
 
-    #account {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-    }
+.hidden { display: none !important; }
 
-    #account img {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
+.field-label {
+  display: block;
+  text-align: left;
+  max-width: 420px;
+  margin: 18px auto 7px;
+  color: #ddd;
+}
 
-    @media (max-width: 600px) {
-      h1 { font-size: 30px; }
-      header { padding: 18px 5%; }
-    }
-  </style>
+.field {
+  display: block;
+  width: 100%;
+  max-width: 420px;
+  margin: auto;
+  padding: 13px;
+  border: 1px solid #50316f;
+  border-radius: 8px;
+  background: #09090f;
+  color: white;
+  outline: none;
+}
+
+.field:focus { border-color: #a855f7; }
+
+#account {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+
+#account img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.transaction {
+  padding: 12px;
+  margin-top: 8px;
+  background: #201a2c;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #ddd;
+}
+
+.success { color: #8affaa; }
+.error { color: #ff7777; }
+
+@media(max-width: 600px) {
+  header { padding: 18px 5%; }
+  h1 { font-size: 30px; }
+}
+</style>
 </head>
 
 <body>
-  <header>
-    <div class="logo">ZHARK AUCTION</div>
-    <div id="account">
-      <button id="loginButton">Entrar com Discord</button>
+
+<header>
+  <div class="logo">ZHARK AUCTION</div>
+  <div id="account">
+    <button id="loginButton">Entrar com Discord</button>
+  </div>
+</header>
+
+<main>
+  <h1>LEILÕES DE <span>KEYS</span></h1>
+  <p class="subtitle">Dispute. Ofereça. Conquiste.</p>
+
+  <section class="panel">
+    <h2 id="welcome">Bem-vindo ao Zhark Key Auction</h2>
+    <p id="message">Entre com sua conta Discord para participar.</p>
+    <button class="discord" id="mainLogin">
+      Autorizar conta Discord
+    </button>
+    <p class="notice">Autenticação segura pelo Discord.</p>
+  </section>
+
+  <section class="panel hidden" id="walletPanel">
+    <h2>Minha carteira</h2>
+    <p class="subtitle">Seu saldo disponível</p>
+    <h1 id="walletBalance" style="color:#a855f7">R$ 0,00</h1>
+
+    <h3>Histórico de créditos</h3>
+    <div id="walletHistory">
+      <p class="notice">Nenhuma movimentação encontrada.</p>
     </div>
-  </header>
+  </section>
 
-  <main>
-    <h1>LEILÕES DE <span>KEYS</span></h1>
-    <p class="subtitle">Dispute. Ofereça. Conquiste.</p>
+  <section class="panel hidden" id="adminPanel">
+    <h2>Gerenciar saldo</h2>
+    <p class="subtitle">Adicione créditos manualmente aos usuários.</p>
 
-    <section class="panel">
-      <h2 id="welcome">Bem-vindo ao Zhark Key Auction</h2>
-      <p id="message">
-        Entre com sua conta Discord para participar dos leilões.
-      </p>
-      <button class="discord" id="mainLogin">
-        Autorizar conta Discord
-      </button>
-      <p class="notice">Sua conta será autenticada com segurança.</p>
-    </section>
+    <label class="field-label" for="discordId">
+      ID do Discord do destinatário
+    </label>
+    <input
+      class="field"
+      id="discordId"
+      type="text"
+      inputmode="numeric"
+      placeholder="Ex.: 1546874141028909140"
+    >
 
-    <section class="panel">
-      <h2>Leilões disponíveis</h2>
-      <p class="subtitle">Em breve, os leilões aparecerão aqui.</p>
-    </section>
-  </main>
+    <label class="field-label" for="creditAmount">
+      Quantidade de créditos (R$)
+    </label>
+    <input
+      class="field"
+      id="creditAmount"
+      type="number"
+      min="0.01"
+      step="0.01"
+      placeholder="Ex.: 50.00"
+    >
 
-  <script type="module">
-    import { createClient } from
-      "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+    <br>
+    <button id="sendCreditButton">Enviar saldo</button>
+    <p id="adminMessage" class="notice" aria-live="polite"></p>
+  </section>
 
-    const SUPABASE_URL =
-      "https://agzxdptfeszbridmwbbx.supabase.co";
+  <section class="panel">
+    <h2>Leilões disponíveis</h2>
+    <p class="subtitle">Em breve, os leilões aparecerão aqui.</p>
+  </section>
+</main>
 
-    const SUPABASE_KEY =
-      "sb_publishable_XhwL0fL0eKLM2cJUfaTMeg_V9noduzf";
+<script type="module">
+import { createClient } from
+"https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
-    const supabase = createClient(
-      SUPABASE_URL,
-      SUPABASE_KEY,
-      {
-        auth: {
-          flowType: "pkce",
-          autoRefreshToken: true,
-          persistSession: true,
-          detectSessionInUrl: true
-        }
-      }
-    );
+const SUPABASE_URL =
+"https://agzxdptfeszbridmwbbx.supabase.co";
 
-    const loginButton = document.getElementById("loginButton");
-    const mainLogin = document.getElementById("mainLogin");
-    const account = document.getElementById("account");
+const SUPABASE_KEY =
+"sb_publishable_XhwL0fL0eKLM2cJUfaTMeg_V9noduzf";
 
-    async function loginDiscord() {
-      loginButton.disabled = true;
-      mainLogin.disabled = true;
-
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "discord",
-        options: {
-          redirectTo:
-            "https://thaylorliberato2025-boop.github.io/Zhark-Key-Auction/"
-        }
-      });
-
-      if (error) {
-        alert("Erro no login: " + error.message);
-        loginButton.disabled = false;
-        mainLogin.disabled = false;
-      }
+const supabase = createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY,
+  {
+    auth: {
+      flowType: "pkce",
+      autoRefreshToken: true,
+      persistSession: true,
+      detectSessionInUrl: true
     }
+  }
+);
 
-    function showUser(user) {
-      if (!user) return;
+const loginButton = document.getElementById("loginButton");
+const mainLogin = document.getElementById("mainLogin");
+const account = document.getElementById("account");
+const adminPanel = document.getElementById("adminPanel");
+const walletPanel = document.getElementById("walletPanel");
+const adminMessage = document.getElementById("adminMessage");
+const sendCreditButton = document.getElementById("sendCreditButton");
 
-      const metadata = user.user_metadata || {};
+async function loginDiscord() {
+  loginButton.disabled = true;
+  mainLogin.disabled = true;
 
-      const name =
-        metadata.full_name ||
-        metadata.global_name ||
-        metadata.name ||
-        metadata.user_name ||
-        metadata.preferred_username ||
-        "Usuário Discord";
-
-      const avatar =
-        metadata.avatar_url ||
-        metadata.picture ||
-        "";
-
-      document.getElementById("welcome").textContent =
-        "Bem-vindo, " + name + "!";
-
-      document.getElementById("message").textContent =
-        "Você está conectado com sua conta Discord.";
-
-      account.replaceChildren();
-
-      if (avatar) {
-        const img = document.createElement("img");
-        img.src = avatar;
-        img.alt = "Foto de perfil";
-        account.appendChild(img);
-      }
-
-      const nameText = document.createElement("span");
-      nameText.textContent = name;
-      account.appendChild(nameText);
-
-      const status = document.createElement("span");
-      status.textContent = "● Conectado";
-      status.style.color = "#b8ffb8";
-      account.appendChild(status);
-
-      mainLogin.textContent = "Conta autorizada";
-      mainLogin.disabled = true;
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: "discord",
+    options: {
+      redirectTo:
+      "https://thaylorliberato2025-boop.github.io/Zhark-Key-Auction/"
     }
+  });
 
-    loginButton.addEventListener("click", loginDiscord);
-    mainLogin.addEventListener("click", loginDiscord);
+  if (error) {
+    alert("Erro no login: " + error.message);
+    loginButton.disabled = false;
+    mainLogin.disabled = false;
+  }
+}
 
-    supabase.auth.onAuthStateChange((event, session) => {
-      if (session?.user) {
-        showUser(session.user);
-      }
-    });
+function showUser(user) {
+  const metadata = user.user_metadata || {};
 
-    const { data, error } = await supabase.auth.getSession();
+  const name =
+    metadata.full_name ||
+    metadata.global_name ||
+    metadata.name ||
+    metadata.user_name ||
+    metadata.preferred_username ||
+    "Usuário Discord";
 
-    if (error) {
-      console.error("Erro ao recuperar sessão:", error.message);
-    } else if (data.session?.user) {
-      showUser(data.session.user);
+  const avatar = metadata.avatar_url || metadata.picture || "";
+
+  document.getElementById("welcome").textContent =
+    "Bem-vindo, " + name + "!";
+
+  document.getElementById("message").textContent =
+    "Você está conectado com sua conta Discord.";
+
+  account.replaceChildren();
+
+  if (avatar) {
+    const img = document.createElement("img");
+    img.src = avatar;
+    img.alt = "Foto de perfil";
+    account.appendChild(img);
+  }
+
+  const nameText = document.createElement("span");
+  nameText.textContent = name;
+  account.appendChild(nameText);
+
+  const status = document.createElement("span");
+  status.textContent = "● Conectado";
+  status.style.color = "#8affaa";
+  account.appendChild(status);
+
+  mainLogin.textContent = "Conta autorizada";
+  mainLogin.disabled = true;
+}
+
+const money = value =>
+  Number(value || 0).toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL"
+  });
+
+async function loadWallet(user) {
+  walletPanel.classList.remove("hidden");
+
+  const { data: wallet, error: walletError } =
+    await supabase
+      .from("wallets")
+      .select("balance")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+  if (walletError) {
+    console.error("Erro ao carregar carteira:", walletError.message);
+  } else {
+    document.getElementById("walletBalance").textContent =
+      money(wallet?.balance || 0);
+  }
+
+  const { data: transactions, error: historyError } =
+    await supabase
+      .from("wallet_transactions")
+      .select("amount, description, created_at")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(10);
+
+  const history = document.getElementById("walletHistory");
+  history.replaceChildren();
+
+  if (historyError || !transactions?.length) {
+    const empty = document.createElement("p");
+    empty.className = "notice";
+    empty.textContent = historyError
+      ? "Não foi possível carregar o histórico."
+      : "Nenhuma movimentação encontrada.";
+    history.appendChild(empty);
+    return;
+  }
+
+  for (const item of transactions) {
+    const line = document.createElement("div");
+    line.className = "transaction";
+    line.textContent =
+      "+ " + money(item.amount) +
+      " — " + (item.description || "Crédito") +
+      " — " + new Date(item.created_at).toLocaleString("pt-BR");
+
+    history.appendChild(line);
+  }
+}
+
+async function checkAdmin() {
+  const { data, error } = await supabase.rpc("is_admin");
+
+  if (error) {
+    console.error("Erro ao verificar administrador:", error.message);
+    return;
+  }
+
+  adminPanel.classList.toggle("hidden", data !== true);
+}
+
+sendCreditButton.addEventListener("click", async () => {
+  const discordId =
+    document.getElementById("discordId").value.trim();
+
+  const amount =
+    Number(document.getElementById("creditAmount").value);
+
+  adminMessage.className = "notice";
+  adminMessage.textContent = "";
+
+  if (!/^\d{17,20}$/.test(discordId)) {
+    adminMessage.className = "notice error";
+    adminMessage.textContent = "Informe um ID do Discord válido.";
+    return;
+  }
+
+  if (!Number.isFinite(amount) || amount <= 0) {
+    adminMessage.className = "notice error";
+    adminMessage.textContent = "Informe um valor maior que zero.";
+    return;
+  }
+
+  sendCreditButton.disabled = true;
+  adminMessage.textContent = "Enviando créditos...";
+
+  const { error } = await supabase.rpc(
+    "admin_add_balance_by_discord",
+    {
+      p_discord_id: discordId,
+      p_amount: amount
     }
-  </script>
+  );
+
+  sendCreditButton.disabled = false;
+
+  if (error) {
+    adminMessage.className = "notice error";
+    adminMessage.textContent =
+      "Não foi possível enviar: " + error.message;
+  } else {
+    adminMessage.className = "notice success";
+    adminMessage.textContent = "Saldo enviado com sucesso!";
+
+    document.getElementById("discordId").value = "";
+    document.getElementById("creditAmount").value = "";
+  }
+});
+
+loginButton.addEventListener("click", loginDiscord);
+mainLogin.addEventListener("click", loginDiscord);
+
+supabase.auth.onAuthStateChange((_event, session) => {
+  if (session?.user) {
+    showUser(session.user);
+
+    setTimeout(async () => {
+      await loadWallet(session.user);
+      await checkAdmin();
+    }, 0);
+  }
+});
+
+const { data, error } = await supabase.auth.getSession();
+
+if (error) {
+  console.error("Erro ao recuperar sessão:", error.message);
+} else if (data.session?.user) {
+  showUser(data.session.user);
+  await loadWallet(data.session.user);
+  await checkAdmin();
+}
+</script>
+
 </body>
 </html>
