@@ -565,6 +565,7 @@ supabase.auth.onAuthStateChange((_event, session) => {
 
     setTimeout(async () => {
       await loadWallet(session.user);
+      await loadAuctions();
       await checkAdmin();
     }, 0);
   }
@@ -577,6 +578,7 @@ if (error) {
 } else if (data.session?.user) {
   showUser(data.session.user);
   await loadWallet(data.session.user);
+  await loadAuctions();
   await checkAdmin();
 }
 </script>
