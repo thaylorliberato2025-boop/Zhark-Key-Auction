@@ -68,7 +68,6 @@ h1 span { color: #a855f7; }
 }
 
 .discord { background: #5865f2; }
-
 .hidden { display: none !important; }
 
 .field-label {
@@ -172,7 +171,7 @@ h1 span { color: #a855f7; }
     </label>
     <input class="field" id="discordId"
       type="text" inputmode="numeric"
-      placeholder="Ex.: 1546874141028909140">
+      placeholder="ID do Discord">
 
     <label class="field-label" for="creditAmount">
       Quantidade de créditos (R$)
@@ -263,8 +262,7 @@ const adminPanel = document.getElementById("adminPanel");
 const walletPanel = document.getElementById("walletPanel");
 const adminMessage = document.getElementById("adminMessage");
 const sendCreditButton = document.getElementById("sendCreditButton");
-const createAuctionButton =
-  document.getElementById("createAuctionButton");
+const createAuctionButton = document.getElementById("createAuctionButton");
 
 let currentUser = null;
 
@@ -393,8 +391,8 @@ async function loadWallet(user) {
     const line = document.createElement("div");
     line.className = "transaction";
     line.textContent =
-      "+ " + money(item.amount) +
-      " — " + (item.description || "Crédito") +
+      money(item.amount) +
+      " — " + (item.description || "Movimentação") +
       " — " + new Date(item.created_at).toLocaleString("pt-BR");
 
     history.appendChild(line);
@@ -657,10 +655,12 @@ createAuctionButton.addEventListener("click", async () => {
   const { data: sessionData, error: sessionError } =
     await supabase.auth.getSession();
 
-  if (sessionError || !sessionData.session) {
+  const accessToken = sessionData?.session?.access_token;
+
+  if (sessionError || !accessToken) {
     message.className = "notice error";
     message.textContent =
-      "Entre com sua conta Discord primeiro.";
+      "Sua sessão expirou. Entre novamente pelo Discord.";
     return;
   }
 
@@ -671,6 +671,9 @@ createAuctionButton.addEventListener("click", async () => {
   try {
     const { data, error } =
       await supabase.functions.invoke("swift-worker", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        },
         body: {
           title,
           description,
@@ -686,7 +689,10 @@ createAuctionButton.addEventListener("click", async () => {
       if (error.context) {
         try {
           const responseBody = await error.context.json();
-          detail = responseBody.error || detail;
+          detail =
+            responseBody.details ||
+            responseBody.error ||
+            detail;
         } catch {}
       }
 
@@ -695,7 +701,9 @@ createAuctionButton.addEventListener("click", async () => {
 
     if (!data?.success) {
       throw new Error(
-        data?.error || "Não foi possível publicar o leilão."
+        data?.details ||
+        data?.error ||
+        "Não foi possível publicar o leilão."
       );
     }
 
@@ -738,6 +746,19 @@ supabase.auth.onAuthStateChange((_event, session) => {
     currentUser = null;
     walletPanel.classList.add("hidden");
     adminPanel.classList.add("hidden");
+
+    account.replaceChildren();
+    account.appendChild(loginButton);
+
+    loginButton.disabled = false;
+    mainLogin.disabled = false;
+    mainLogin.textContent = "Autorizar conta Discord";
+
+    document.getElementById("welcome").textContent =
+      "Bem-vindo ao Zhark Key Auction";
+
+    document.getElementById("message").textContent =
+      "Entre com sua conta Discord para participar.";
   }
 });
 
