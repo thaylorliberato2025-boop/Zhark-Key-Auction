@@ -1,0 +1,85 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zhark Key Auction</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #09090f;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 22px 8%;
+      border-bottom: 1px solid #29203d;
+    }
+    .logo { color: #a855f7; font-size: 22px; font-weight: bold; }
+    button {
+      border: 0;
+      padding: 13px 20px;
+      border-radius: 8px;
+      background: #7c3aed;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    main {
+      max-width: 1000px;
+      margin: 65px auto;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 { font-size: 42px; }
+    h1 span { color: #a855f7; }
+    .subtitle { color: #aaa; }
+    .panel {
+      background: #15121f;
+      border: 1px solid #38234f;
+      border-radius: 14px;
+      padding: 25px;
+      margin-top: 35px;
+    }
+    .discord { background: #5865f2; margin-top: 15px; }
+    .notice { color: #aaa; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">ZHARK AUCTION</div>
+    <button id="loginButton">Entrar com Discord</button>
+  </header>
+
+  <main>
+    <h1>LEILÕES DE <span>KEYS</span></h1>
+    <p class="subtitle">Dispute. Ofereça. Conquiste.</p>
+
+    <section class="panel">
+      <h2>Bem-vindo ao Zhark Key Auction</h2>
+      <p>Entre com sua conta Discord para participar dos leilões.</p>
+      <button class="discord" id="mainLogin">Autorizar conta Discord</button>
+      <p class="notice">Sua conta será autenticada com segurança.</p>
+    </section>
+
+    <section class="panel">
+      <h2>Leilões disponíveis</h2>
+      <p class="subtitle">Em breve, os leilões aparecerão aqui.</p>
+    </section>
+  </main>
+
+  <script>
+    document.getElementById("loginButton").onclick = () => {
+      alert("O login Discord será ativado na próxima etapa.");
+    };
+    document.getElementById("mainLogin").onclick = () => {
+      alert("O login Discord será ativado na próxima etapa.");
+    };
+  </script>
+</body>
+</html>
