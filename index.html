@@ -73,13 +73,48 @@
     </section>
   </main>
 
-  <script>
-    document.getElementById("loginButton").onclick = () => {
-      alert("O login Discord será ativado na próxima etapa.");
-    };
-    document.getElementById("mainLogin").onclick = () => {
-      alert("O login Discord será ativado na próxima etapa.");
-    };
-  </script>
+  
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+const SUPABASE_URL = "https://agzxdptfeszbridmwbbx.supabase.co";
+const SUPABASE_KEY = "sb_publishable_XhwL0fL0eKLM2cJUfaTMeg_V9noduzf";
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+async function loginDiscord() {
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: "discord",
+    options: {
+      redirectTo: window.location.origin + window.location.pathname
+    }
+  });
+
+  if (error) {
+    alert("Erro no login: " + error.message);
+  }
+}
+
+document.getElementById("loginButton").onclick = loginDiscord;
+document.getElementById("mainLogin").onclick = loginDiscord;
+
+const { data: { session } } = await supabase.auth.getSession();
+
+if (session) {
+  const user = session.user;
+  const name =
+    user.user_metadata.full_name ||
+    user.user_metadata.name ||
+    user.user_metadata.user_name ||
+    "Usuário Discord";
+
+  document.querySelector("main .panel h2").textContent =
+    "Bem-vindo, " + name + "!";
+
+  document.getElementById("loginButton").textContent = "Conectado";
+  document.getElementById("mainLogin").textContent = "Conta autorizada";
+}
+</script>
+
 </body>
 </html>
