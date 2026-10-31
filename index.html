@@ -196,9 +196,42 @@ h1 span { color: #a855f7; }
   </section>
 
   <section class="panel">
-    <h2>Leilões disponíveis</h2>
-    <p class="subtitle">Em breve, os leilões aparecerão aqui.</p>
-  </section>
+  <h2>Publicar um leilão</h2>
+  <p class="subtitle">Anuncie sua key para outros usuários.</p>
+
+  <label class="field-label">Título da key</label>
+  <input class="field" id="auctionTitle"
+    type="text" placeholder="Ex.: Key VIP">
+
+  <label class="field-label">Descrição</label>
+  <input class="field" id="auctionDescription"
+    type="text" placeholder="Descreva sua key">
+
+  <label class="field-label">Preço inicial (R$)</label>
+  <input class="field" id="auctionPrice"
+    type="number" min="0.01" step="0.01"
+    placeholder="Ex.: 50">
+
+  <label class="field-label">Duração do leilão</label>
+  <select class="field" id="auctionDuration">
+    <option value="1">1 hora</option>
+    <option value="6">6 horas</option>
+    <option value="12">12 horas</option>
+    <option value="24" selected>24 horas</option>
+    <option value="48">48 horas</option>
+    <option value="72">3 dias</option>
+    <option value="168">7 dias</option>
+  </select>
+
+  <br><br>
+  <button id="createAuctionButton">Publicar leilão</button>
+  <p id="auctionMessage" class="notice"></p>
+</section>
+
+<section class="panel">
+  <h2>Leilões disponíveis</h2>
+  <p class="subtitle">Em breve, os leilões aparecerão aqui.</p>
+</section>
 </main>
 
 <script type="module">
@@ -412,7 +445,65 @@ sendCreditButton.addEventListener("click", async () => {
     document.getElementById("creditAmount").value = "";
   }
 });
+const createAuctionButton =
+  document.getElementById("createAuctionButton");
 
+createAuctionButton.addEventListener("click", async () => {
+  const title =
+    document.getElementById("auctionTitle").value.trim();
+
+  const description =
+    document.getElementById("auctionDescription").value.trim();
+
+  const price =
+    Number(document.getElementById("auctionPrice").value);
+
+  const duration =
+    Number(document.getElementById("auctionDuration").value);
+
+  const message =
+    document.getElementById("auctionMessage");
+
+  message.className = "notice";
+  message.textContent = "";
+
+  if (title.length < 3) {
+    message.className = "notice error";
+    message.textContent = "O título precisa ter pelo menos 3 caracteres.";
+    return;
+  }
+
+  if (!Number.isFinite(price) || price <= 0) {
+    message.className = "notice error";
+    message.textContent = "Informe um preço inicial válido.";
+    return;
+  }
+
+  createAuctionButton.disabled = true;
+  message.textContent = "Publicando leilão...";
+
+  const { error } = await supabase.rpc("create_auction", {
+    p_title: title,
+    p_description: description,
+    p_starting_price: price,
+    p_duration_hours: duration
+  });
+
+  createAuctionButton.disabled = false;
+
+  if (error) {
+    message.className = "notice error";
+    message.textContent = "Erro: " + error.message;
+    return;
+  }
+
+  message.className = "notice success";
+  message.textContent = "Leilão publicado com sucesso!";
+
+  document.getElementById("auctionTitle").value = "";
+  document.getElementById("auctionDescription").value = "";
+  document.getElementById("auctionPrice").value = "";
+});
 loginButton.addEventListener("click", loginDiscord);
 mainLogin.addEventListener("click", loginDiscord);
 
