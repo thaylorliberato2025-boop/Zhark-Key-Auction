@@ -111,8 +111,32 @@ if (session) {
   document.querySelector("main .panel h2").textContent =
     "Bem-vindo, " + name + "!";
 
-  document.getElementById("loginButton").textContent = "Conectado";
-  document.getElementById("mainLogin").textContent = "Conta autorizada";
+  const avatar =
+  user.user_metadata.avatar_url ||
+  user.user_metadata.picture ||
+  "";
+
+const profileName =
+  user.user_metadata.full_name ||
+  user.user_metadata.name ||
+  user.user_metadata.user_name ||
+  "Usuário";
+
+const loginButton = document.getElementById("loginButton");
+
+loginButton.innerHTML = `
+  <img src="${avatar}" 
+       style="width:30px;height:30px;border-radius:50%;object-fit:cover;"
+       alt="Avatar">
+  <span>${profileName}</span>
+  <span style="color:#b8ffb8;font-size:11px;">● Conectado</span>
+`;
+
+loginButton.style.display = "flex";
+loginButton.style.alignItems = "center";
+loginButton.style.gap = "9px";
+
+document.getElementById("mainLogin").textContent = "Conta autorizada";
 }
 </script>
 
