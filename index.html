@@ -80,8 +80,14 @@ import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 const SUPABASE_URL = "https://agzxdptfeszbridmwbbx.supabase.co";
 const SUPABASE_KEY = "sb_publishable_XhwL0fL0eKLM2cJUfaTMeg_V9noduzf";
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
+  auth: {
+    flowType: "pkce",
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: true
+  }
+});
 async function loginDiscord() {
   const { error } = await supabase.auth.signInWithOAuth({
     provider: "discord",
@@ -151,19 +157,7 @@ if (session) {
     "Conta autorizada";
 }
 
-  <img src="${avatar}" 
-       style="width:30px;height:30px;border-radius:50%;object-fit:cover;"
-       alt="Avatar">
-  <span>${profileName}</span>
-  <span style="color:#b8ffb8;font-size:11px;">● Conectado</span>
-`;
-
-loginButton.style.display = "flex";
-loginButton.style.alignItems = "center";
-loginButton.style.gap = "9px";
-
-document.getElementById("mainLogin").textContent = "Conta autorizada";
-}
+  
 </script>
 
 </body>
