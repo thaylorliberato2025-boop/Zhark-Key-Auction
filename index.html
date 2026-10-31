@@ -679,7 +679,7 @@ createAuctionButton.addEventListener("click", async () => {
           title,
           description,
           starting_price: price,
-          duration_hours: duration,
+          duration_minutes: Number(duration),
           secret_key: secretKey
         }
       });
