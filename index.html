@@ -152,10 +152,10 @@ h1 span { color: #a855f7; }
   <section class="panel hidden" id="walletPanel">
     <h2>Minha carteira</h2>
     <p class="subtitle">Saldo disponível</p>
-<h1 id="walletBalance" style="color:#a855f7">R$ 0,00</h1>
+    <h1 id="walletBalance" style="color:#a855f7">R$ 0,00</h1>
 
-<p class="subtitle">Saldo reservado em lances</p>
-<h2 id="walletReserved" style="color:#f0abfc">R$ 0,00</h2>
+    <p class="subtitle">Saldo reservado em lances</p>
+    <h2 id="walletReserved" style="color:#f0abfc">R$ 0,00</h2>
 
     <h3>Histórico de créditos</h3>
     <div id="walletHistory">
@@ -170,25 +170,16 @@ h1 span { color: #a855f7; }
     <label class="field-label" for="discordId">
       ID do Discord do destinatário
     </label>
-    <input
-      class="field"
-      id="discordId"
-      type="text"
-      inputmode="numeric"
-      placeholder="Ex.: 1546874141028909140"
-    >
+    <input class="field" id="discordId"
+      type="text" inputmode="numeric"
+      placeholder="Ex.: 1546874141028909140">
 
     <label class="field-label" for="creditAmount">
       Quantidade de créditos (R$)
     </label>
-    <input
-      class="field"
-      id="creditAmount"
-      type="number"
-      min="0.01"
-      step="0.01"
-      placeholder="Ex.: 50.00"
-    >
+    <input class="field" id="creditAmount"
+      type="number" min="0.01" step="0.01"
+      placeholder="Ex.: 50.00">
 
     <br>
     <button id="sendCreditButton">Enviar saldo</button>
@@ -196,46 +187,50 @@ h1 span { color: #a855f7; }
   </section>
 
   <section class="panel">
-  <h2>Publicar um leilão</h2>
-  <p class="subtitle">Anuncie sua key para outros usuários.</p>
+    <h2>Publicar um leilão</h2>
+    <p class="subtitle">Anuncie sua key para outros usuários.</p>
 
-  <label class="field-label">Título da key</label>
-  <input class="field" id="auctionTitle"
-    type="text" placeholder="Ex.: Key VIP">
+    <label class="field-label" for="auctionTitle">Título da key</label>
+    <input class="field" id="auctionTitle"
+      type="text" placeholder="Ex.: Key VIP">
 
-  <label class="field-label">Descrição</label>
-  <input class="field" id="auctionDescription"
-    type="text" placeholder="Descreva sua key">
+    <label class="field-label" for="auctionDescription">Descrição</label>
+    <input class="field" id="auctionDescription"
+      type="text" placeholder="Descreva sua key">
 
-  <label class="field-label">Preço inicial (R$)</label>
-  <input class="field" id="auctionPrice"
-    type="number" min="0.01" step="0.01"
-    placeholder="Ex.: 50">
+    <label class="field-label" for="auctionKey">Key secreta</label>
+    <input class="field" id="auctionKey"
+      type="password" autocomplete="off"
+      placeholder="Cole a key que será entregue ao vencedor">
 
-  <label class="field-label">Duração do leilão</label>
-  <select class="field" id="auctionDuration">
-    <option value="1">1 hora</option>
-    <option value="6">6 horas</option>
-    <option value="12">12 horas</option>
-    <option value="24" selected>24 horas</option>
-    <option value="48">48 horas</option>
-    <option value="72">3 dias</option>
-    <option value="168">7 dias</option>
-  </select>
+    <label class="field-label" for="auctionPrice">Preço inicial (R$)</label>
+    <input class="field" id="auctionPrice"
+      type="number" min="0.01" step="0.01"
+      placeholder="Ex.: 50">
 
-  <br><br>
-  <button id="createAuctionButton">Publicar leilão</button>
-  <p id="auctionMessage" class="notice"></p>
-</section>
+    <label class="field-label" for="auctionDuration">Duração do leilão</label>
+    <select class="field" id="auctionDuration">
+      <option value="1">1 hora</option>
+      <option value="6">6 horas</option>
+      <option value="12">12 horas</option>
+      <option value="24" selected>24 horas</option>
+      <option value="48">48 horas</option>
+      <option value="72">3 dias</option>
+      <option value="168">7 dias</option>
+    </select>
 
-<section class="panel">
-  <h2>Leilões disponíveis</h2>
-  <p class="subtitle">Confira as keys disponíveis para dar lances.</p>
+    <br><br>
+    <button id="createAuctionButton">Publicar leilão</button>
+    <p id="auctionMessage" class="notice" aria-live="polite"></p>
+  </section>
 
-  <div id="auctionList">
-    <p class="notice">Carregando leilões...</p>
-  </div>
-</section>
+  <section class="panel">
+    <h2>Leilões disponíveis</h2>
+    <p class="subtitle">Confira as keys disponíveis para dar lances.</p>
+    <div id="auctionList">
+      <p class="notice">Carregando leilões...</p>
+    </div>
+  </section>
 </main>
 
 <script type="module">
@@ -243,10 +238,10 @@ import { createClient } from
 "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
 const SUPABASE_URL =
-"https://agzxdptfeszbridmwbbx.supabase.co";
+  "https://agzxdptfeszbridmwbbx.supabase.co";
 
 const SUPABASE_KEY =
-"sb_publishable_XhwL0fL0eKLM2cJUfaTMeg_V9noduzf";
+  "sb_publishable_XhwL0fL0eKLM2cJUfaTMeg_V9noduzf";
 
 const supabase = createClient(
   SUPABASE_URL,
@@ -268,6 +263,10 @@ const adminPanel = document.getElementById("adminPanel");
 const walletPanel = document.getElementById("walletPanel");
 const adminMessage = document.getElementById("adminMessage");
 const sendCreditButton = document.getElementById("sendCreditButton");
+const createAuctionButton =
+  document.getElementById("createAuctionButton");
+
+let currentUser = null;
 
 async function loginDiscord() {
   loginButton.disabled = true;
@@ -277,7 +276,7 @@ async function loginDiscord() {
     provider: "discord",
     options: {
       redirectTo:
-      "https://thaylorliberato2025-boop.github.io/Zhark-Key-Auction/"
+        "https://thaylorliberato2025-boop.github.io/Zhark-Key-Auction/"
     }
   });
 
@@ -289,6 +288,8 @@ async function loginDiscord() {
 }
 
 function showUser(user) {
+  currentUser = user;
+
   const metadata = user.user_metadata || {};
 
   const name =
@@ -325,6 +326,15 @@ function showUser(user) {
   status.style.color = "#8affaa";
   account.appendChild(status);
 
+  const logoutButton = document.createElement("button");
+  logoutButton.textContent = "Sair";
+  logoutButton.addEventListener("click", async () => {
+    await supabase.auth.signOut();
+    location.reload();
+  });
+
+  account.appendChild(logoutButton);
+
   mainLogin.textContent = "Conta autorizada";
   mainLogin.disabled = true;
 }
@@ -349,13 +359,13 @@ async function loadWallet(user) {
     console.error("Erro ao carregar carteira:", walletError.message);
   } else {
     const balance = Number(wallet?.balance || 0);
-const reserved = Number(wallet?.reserved_balance || 0);
+    const reserved = Number(wallet?.reserved_balance || 0);
 
-document.getElementById("walletBalance").textContent =
-  money(balance - reserved);
+    document.getElementById("walletBalance").textContent =
+      money(balance - reserved);
 
-document.getElementById("walletReserved").textContent =
-  money(reserved);
+    document.getElementById("walletReserved").textContent =
+      money(reserved);
   }
 
   const { data: transactions, error: historyError } =
@@ -390,9 +400,9 @@ document.getElementById("walletReserved").textContent =
     history.appendChild(line);
   }
 }
+
 async function loadAuctions() {
   const auctionList = document.getElementById("auctionList");
-
   auctionList.textContent = "Carregando leilões...";
 
   const { data: auctions, error } = await supabase
@@ -401,7 +411,8 @@ async function loadAuctions() {
     .order("created_at", { ascending: false });
 
   if (error) {
-    auctionList.textContent = "Erro ao carregar leilões: " + error.message;
+    auctionList.textContent =
+      "Erro ao carregar leilões: " + error.message;
     return;
   }
 
@@ -420,74 +431,116 @@ async function loadAuctions() {
     title.textContent = auction.title;
 
     const description = document.createElement("p");
-    description.textContent = auction.description || "Sem descrição.";
+    description.textContent =
+      auction.description || "Sem descrição.";
 
     const price = document.createElement("p");
-    price.textContent = "Preço atual: " + money(auction.current_price);
+    price.textContent =
+      "Preço atual: " + money(auction.current_price);
 
     const end = document.createElement("p");
-    end.textContent = "Encerra em: " +
+    end.textContent =
+      "Encerra em: " +
       new Date(auction.ends_at).toLocaleString("pt-BR");
 
+    const isOpen =
+      auction.status === "open" &&
+      new Date(auction.ends_at) > new Date();
+
     const status = document.createElement("p");
-    status.textContent =
-      auction.status === "open" && new Date(auction.ends_at) > new Date()
-        ? "Leilão aberto"
-        : "Leilão encerrado";
+    status.textContent = isOpen
+      ? "Leilão aberto"
+      : "Leilão encerrado";
 
-    const bidInput = document.createElement("input");
-bidInput.type = "number";
-bidInput.min = Number(auction.current_price) + 0.01;
-bidInput.step = "0.01";
-bidInput.placeholder = "Valor do seu lance";
-bidInput.className = "field";
+    card.append(title, description, price, end, status);
 
-const bidButton = document.createElement("button");
-bidButton.textContent = "Dar lance";
+    if (isOpen && currentUser?.id !== auction.seller_id) {
+      const bidInput = document.createElement("input");
+      bidInput.type = "number";
+      bidInput.min = Number(auction.current_price) + 0.01;
+      bidInput.step = "0.01";
+      bidInput.placeholder = "Valor do seu lance";
+      bidInput.className = "field";
 
-card.append(title, description, price, end, status, bidInput, bidButton);
-auctionList.appendChild(card);
-    bidButton.addEventListener("click", async () => {
-  const amount = Number(bidInput.value);
+      const bidButton = document.createElement("button");
+      bidButton.textContent = "Dar lance";
 
-  if (!Number.isFinite(amount) || amount <= Number(auction.current_price)) {
-    alert("Seu lance precisa ser maior que o preço atual!");
-    return;
-  }
+      card.append(bidInput, bidButton);
 
-  bidButton.disabled = true;
-  bidButton.textContent = "Enviando...";
+      bidButton.addEventListener("click", async () => {
+        const amount = Number(bidInput.value);
 
-  const { data: userData, error: userError } =
-    await supabase.auth.getUser();
+        if (!Number.isFinite(amount) ||
+            amount <= Number(auction.current_price)) {
+          alert("Seu lance precisa ser maior que o preço atual!");
+          return;
+        }
 
-  if (userError || !userData.user) {
-    alert("Você precisa entrar na sua conta Discord.");
-    bidButton.disabled = false;
-    bidButton.textContent = "Dar lance";
-    return;
-  }
+        bidButton.disabled = true;
+        bidButton.textContent = "Enviando...";
 
-  const { error } = await supabase.rpc("place_bid", {
-    p_auction_id: auction.id,
-    p_amount: amount
-  });
+        try {
+          const { data: userData, error: userError } =
+            await supabase.auth.getUser();
 
-  bidButton.disabled = false;
-  bidButton.textContent = "Dar lance";
+          if (userError || !userData.user) {
+            throw new Error("Entre na sua conta Discord.");
+          }
 
-  if (error) {
-    alert("Erro ao dar lance: " + error.message);
-    return;
-  }
+          const { error } = await supabase.rpc("place_bid", {
+            p_auction_id: auction.id,
+            p_amount: amount
+          });
 
-  alert("Lance realizado com sucesso!");
+          if (error) throw error;
 
-  await loadAuctions();
-  await loadWallet(userData.user);
-});
+          alert("Lance realizado com sucesso!");
+
+          await loadAuctions();
+          await loadWallet(userData.user);
+
+        } catch (error) {
+          alert("Erro ao dar lance: " + error.message);
+        } finally {
+          bidButton.disabled = false;
+          bidButton.textContent = "Dar lance";
+        }
+      });
+    }
+
+    if (auction.status === "finished") {
+      const redeemButton = document.createElement("button");
+      redeemButton.textContent = "Resgatar minha Key";
+
+      redeemButton.addEventListener("click", async () => {
+        redeemButton.disabled = true;
+        redeemButton.textContent = "Buscando Key...";
+
+        try {
+          const { data: secret, error: keyError } =
+            await supabase.rpc("get_my_auction_key", {
+              p_auction_id: auction.id
+            });
+
+          if (keyError) throw keyError;
+
+          alert("Sua Key: " + secret);
+
+        } catch (error) {
+          alert("Não foi possível resgatar: " + error.message);
+        } finally {
+          redeemButton.disabled = false;
+          redeemButton.textContent = "Resgatar minha Key";
+        }
+      });
+
+      card.appendChild(redeemButton);
+    }
+
+    auctionList.appendChild(card);
   }
 }
+
 async function checkAdmin() {
   const { data, error } = await supabase.rpc("is_admin");
 
@@ -524,37 +577,42 @@ sendCreditButton.addEventListener("click", async () => {
   sendCreditButton.disabled = true;
   adminMessage.textContent = "Enviando créditos...";
 
-  const { error } = await supabase.rpc(
-    "admin_add_balance_by_discord",
-    {
-      p_discord_id: discordId,
-      p_amount: amount
-    }
-  );
+  try {
+    const { error } = await supabase.rpc(
+      "admin_add_balance_by_discord",
+      {
+        p_discord_id: discordId,
+        p_amount: amount
+      }
+    );
 
-  sendCreditButton.disabled = false;
+    if (error) throw error;
 
-  if (error) {
-    adminMessage.className = "notice error";
-    adminMessage.textContent =
-      "Não foi possível enviar: " + error.message;
-  } else {
     adminMessage.className = "notice success";
     adminMessage.textContent = "Saldo enviado com sucesso!";
 
     document.getElementById("discordId").value = "";
     document.getElementById("creditAmount").value = "";
+
+  } catch (error) {
+    adminMessage.className = "notice error";
+    adminMessage.textContent =
+      "Não foi possível enviar: " + error.message;
+  } finally {
+    sendCreditButton.disabled = false;
   }
 });
-const createAuctionButton =
-  document.getElementById("createAuctionButton");
 
+// PUBLICAÇÃO DE LEILÃO COM VALIDAÇÃO AUTOMÁTICA DA KEY
 createAuctionButton.addEventListener("click", async () => {
   const title =
     document.getElementById("auctionTitle").value.trim();
 
   const description =
     document.getElementById("auctionDescription").value.trim();
+
+  const secretKey =
+    document.getElementById("auctionKey").value.trim();
 
   const price =
     Number(document.getElementById("auctionPrice").value);
@@ -570,41 +628,100 @@ createAuctionButton.addEventListener("click", async () => {
 
   if (title.length < 3) {
     message.className = "notice error";
-    message.textContent = "O título precisa ter pelo menos 3 caracteres.";
+    message.textContent =
+      "O título precisa ter pelo menos 3 caracteres.";
+    return;
+  }
+
+  if (!secretKey) {
+    message.className = "notice error";
+    message.textContent =
+      "Digite a Key que será entregue ao vencedor.";
     return;
   }
 
   if (!Number.isFinite(price) || price <= 0) {
     message.className = "notice error";
-    message.textContent = "Informe um preço inicial válido.";
+    message.textContent =
+      "Informe um preço inicial válido.";
+    return;
+  }
+
+  if (!Number.isInteger(duration) ||
+      duration < 1 || duration > 168) {
+    message.className = "notice error";
+    message.textContent = "Duração inválida.";
+    return;
+  }
+
+  const { data: sessionData, error: sessionError } =
+    await supabase.auth.getSession();
+
+  if (sessionError || !sessionData.session) {
+    message.className = "notice error";
+    message.textContent =
+      "Entre com sua conta Discord primeiro.";
     return;
   }
 
   createAuctionButton.disabled = true;
-  message.textContent = "Publicando leilão...";
+  message.textContent =
+    "Validando Key e publicando leilão...";
 
-  const { error } = await supabase.rpc("create_auction", {
-    p_title: title,
-    p_description: description,
-    p_starting_price: price,
-    p_duration_hours: duration
-  });
+  try {
+    const { data, error } =
+      await supabase.functions.invoke("swift-worker", {
+        body: {
+          title,
+          description,
+          starting_price: price,
+          duration_hours: duration,
+          secret_key: secretKey
+        }
+      });
 
-  createAuctionButton.disabled = false;
+    if (error) {
+      let detail = error.message;
 
-  if (error) {
+      if (error.context) {
+        try {
+          const responseBody = await error.context.json();
+          detail = responseBody.error || detail;
+        } catch {}
+      }
+
+      throw new Error(detail);
+    }
+
+    if (!data?.success) {
+      throw new Error(
+        data?.error || "Não foi possível publicar o leilão."
+      );
+    }
+
+    message.className = "notice success";
+    message.textContent =
+      "Leilão publicado e Key validada com sucesso!";
+
+    document.getElementById("auctionTitle").value = "";
+    document.getElementById("auctionDescription").value = "";
+    document.getElementById("auctionKey").value = "";
+    document.getElementById("auctionPrice").value = "";
+
+    await loadAuctions();
+
+  } catch (error) {
+    console.error("Erro ao publicar leilão:", error);
+
     message.className = "notice error";
-    message.textContent = "Erro: " + error.message;
-    return;
+    message.textContent =
+      "Erro ao publicar: " + error.message;
+
+  } finally {
+    createAuctionButton.disabled = false;
   }
-
-  message.className = "notice success";
-  message.textContent = "Leilão publicado com sucesso!";
-
-  document.getElementById("auctionTitle").value = "";
-  document.getElementById("auctionDescription").value = "";
-  document.getElementById("auctionPrice").value = "";
 });
+
 loginButton.addEventListener("click", loginDiscord);
 mainLogin.addEventListener("click", loginDiscord);
 
@@ -617,6 +734,10 @@ supabase.auth.onAuthStateChange((_event, session) => {
       await loadAuctions();
       await checkAdmin();
     }, 0);
+  } else {
+    currentUser = null;
+    walletPanel.classList.add("hidden");
+    adminPanel.classList.add("hidden");
   }
 });
 
@@ -629,6 +750,8 @@ if (error) {
   await loadWallet(data.session.user);
   await loadAuctions();
   await checkAdmin();
+} else {
+  await loadAuctions();
 }
 </script>
 
