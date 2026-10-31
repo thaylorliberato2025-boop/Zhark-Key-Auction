@@ -315,10 +315,10 @@ async function loadWallet(user) {
 const reserved = Number(wallet?.reserved_balance || 0);
 
 document.getElementById("walletBalance").textContent =
-  formatMoney(balance - reserved);
+  money(balance - reserved);
 
 document.getElementById("walletReserved").textContent =
-  formatMoney(reserved);
+  money(reserved);
   }
 
   const { data: transactions, error: historyError } =
