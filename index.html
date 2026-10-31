@@ -304,15 +304,21 @@ async function loadWallet(user) {
   const { data: wallet, error: walletError } =
     await supabase
       .from("wallets")
-      .select("balance")
+      .select("balance, reserved_balance")
       .eq("user_id", user.id)
       .maybeSingle();
 
   if (walletError) {
     console.error("Erro ao carregar carteira:", walletError.message);
   } else {
-    document.getElementById("walletBalance").textContent =
-      money(wallet?.balance || 0);
+    const balance = Number(wallet?.balance || 0);
+const reserved = Number(wallet?.reserved_balance || 0);
+
+document.getElementById("walletBalance").textContent =
+  formatMoney(balance - reserved);
+
+document.getElementById("walletReserved").textContent =
+  formatMoney(reserved);
   }
 
   const { data: transactions, error: historyError } =
