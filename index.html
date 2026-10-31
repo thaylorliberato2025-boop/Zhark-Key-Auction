@@ -100,31 +100,57 @@ document.getElementById("mainLogin").onclick = loginDiscord;
 
 const { data: { session } } = await supabase.auth.getSession();
 
+
 if (session) {
   const user = session.user;
+  const metadata = user.user_metadata || {};
+
   const name =
-    user.user_metadata.full_name ||
-    user.user_metadata.name ||
-    user.user_metadata.user_name ||
+    metadata.full_name ||
+    metadata.name ||
+    metadata.user_name ||
     "Usuário Discord";
+
+  const avatar =
+    metadata.avatar_url ||
+    metadata.picture ||
+    "";
 
   document.querySelector("main .panel h2").textContent =
     "Bem-vindo, " + name + "!";
 
-  const avatar =
-  user.user_metadata.avatar_url ||
-  user.user_metadata.picture ||
-  "";
+  const loginButton = document.getElementById("loginButton");
 
-const profileName =
-  user.user_metadata.full_name ||
-  user.user_metadata.name ||
-  user.user_metadata.user_name ||
-  "Usuário";
+  loginButton.replaceChildren();
 
-const loginButton = document.getElementById("loginButton");
+  if (avatar) {
+    const img = document.createElement("img");
+    img.src = avatar;
+    img.alt = "Foto de perfil";
+    img.style.width = "32px";
+    img.style.height = "32px";
+    img.style.borderRadius = "50%";
+    img.style.objectFit = "cover";
+    loginButton.appendChild(img);
+  }
 
-loginButton.innerHTML = `
+  const profile = document.createElement("span");
+  profile.textContent = name;
+  loginButton.appendChild(profile);
+
+  const status = document.createElement("span");
+  status.textContent = "● Conectado";
+  status.style.color = "#b8ffb8";
+  loginButton.appendChild(status);
+
+  loginButton.style.display = "flex";
+  loginButton.style.alignItems = "center";
+  loginButton.style.gap = "9px";
+
+  document.getElementById("mainLogin").textContent =
+    "Conta autorizada";
+}
+
   <img src="${avatar}" 
        style="width:30px;height:30px;border-radius:50%;object-fit:cover;"
        alt="Avatar">
