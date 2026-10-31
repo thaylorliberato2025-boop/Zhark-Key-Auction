@@ -405,10 +405,40 @@ async function loadAuctions() {
   auctionList.textContent = "Carregando leilões...";
 
   const { data: auctions, error } = await supabase
-    .from("auctions")
-    .select("*")
-    .order("created_at", { ascending: false });
+  .from("auctions")
+  .select("*")
+  .order("created_at", { ascending: false });
 
+if (error) {
+  console.error("Erro ao carregar leilões:", error);
+  return;
+}
+
+let finalizedAny = false;
+
+if (auctions) {
+  for (const auction of auctions) {
+    if (
+      auction.status === "open" &&
+      new Date(auction.ends_at) <= new Date()
+    ) {
+      const { error: finishError } = await supabase.rpc(
+        "finish_auction",
+        { p_auction_id: auction.id }
+      );
+
+      if (finishError) {
+        console.error("Erro ao finalizar leilão:", finishError);
+      } else {
+        finalizedAny = true;
+      }
+    }
+  }
+}
+
+if (finalizedAny) {
+  return loadAuctions();
+}
   if (error) {
     auctionList.textContent =
       "Erro ao carregar leilões: " + error.message;
